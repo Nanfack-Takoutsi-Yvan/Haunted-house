@@ -12,6 +12,16 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js'
 const gui = new GUI().open(false)
 
 /**
+ * Constants
+ */
+const properties = {
+  doorLight: {
+    intensity: 7,
+    color: 0xff7d46
+  }
+}
+
+/**
  * Textures
  */
 // Door Texture
@@ -263,14 +273,14 @@ moonLightPositionControlFolder.add(moonLight.position, "z", 0, 10, .1).name("z a
 // Door Light
 const doorLiht = new three.Object3D()
 house.add(doorLiht)
-const doorLightEmission = new three.PointLight(0xff7d46, 7, 7)
+const doorLightEmission = new three.PointLight(properties.doorLight.color, properties.doorLight.intensity, 7)
 doorLightEmission.castShadow = true
 doorLightEmission.position.set(0, -1.7, -.7)
 const doorLightbulb = new three.Mesh(
   new three.SphereGeometry(.125),
   new three.MeshPhongMaterial({
-    emissive:0xff7d46,
-    emissiveIntensity: 5
+    emissive:properties.doorLight.color,
+    emissiveIntensity: properties.doorLight.intensity
   })
 )
 doorLightbulb.add(doorLightEmission)
@@ -283,7 +293,14 @@ scene.add(doorLightHelper)
 
 const doorLightEmmisionControlFolder = gui.addFolder("Door Light").open(false)
 const doorLightEmmisionLightingControlFolder = doorLightEmmisionControlFolder.addFolder("Lighting").open(false)
-doorLightEmmisionLightingControlFolder.add(doorLightEmission, "intensity", 0, 10, .1).name("Intensity")
+doorLightEmmisionLightingControlFolder.add(properties.doorLight, "intensity", 0, 100, .1).name("Intensity").onChange(() => {
+  doorLightEmission.intensity = properties.doorLight.intensity
+  doorLightbulb.material.emissiveIntensity = properties.doorLight.intensity
+})
+doorLightEmmisionLightingControlFolder.addColor(properties.doorLight, "color").name("Color").onChange(() => {
+  doorLightEmission.color = new three.Color(properties.doorLight.color)
+  doorLightbulb.material.emissive = new three.Color(properties.doorLight.color)
+})
 doorLightEmmisionLightingControlFolder.add(doorLightEmission, "castShadow").name("Cast Shadow")
 doorLightEmmisionLightingControlFolder.add(doorLightHelper, "visible").name("Helper")
 const doorLightEmmisionPositionControlFolder = doorLightEmmisionControlFolder.addFolder("Position").open(false)
