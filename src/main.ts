@@ -73,8 +73,8 @@ window.addEventListener('resize', () => {
  */
 const scene = new three.Scene()
 // Fog
-// const fog = new three.Fog(0x262837, 1, 9)
-// scene.fog = fog
+const fog = new three.Fog(0x262837, 1, 9)
+scene.fog = fog
 
 /**
  * Axes Helpers
